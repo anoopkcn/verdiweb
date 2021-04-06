@@ -23,6 +23,8 @@ app.get('/', (request, response) => {
 
 app.get('/dbnodes', db.dbnodes)
 app.get('/dbnodes/:id', db.dbnode)
+app.get('/dblog/:id', db.dblog)
+app.get('/dblink/:id', db.dblink)
 
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));

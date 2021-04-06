@@ -4,16 +4,13 @@ import Modal from "react-modal";
 import NotesIcon from "@material-ui/icons/Notes";
 import DeviceHubIcon from "@material-ui/icons/DeviceHub";
 import Divider from "@material-ui/core/Divider";
-// import { db } from "../lib/global";
-import { catRemoteFile, catLocalFile, pprint } from "../lib/utils";
+import { pprint } from "./utils"; //catRemoteFile, catLocalFile, 
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { Attr } from "./Elements";
 
-function copyToClip(text) {
-  // clipboard.writeText(text.toString());
-}
+import copy from "copy-to-clipboard";
 
 /**
  * AiiDA node REPORT react component
@@ -36,29 +33,22 @@ function LogData(props) {
 export function LogButton(props) {
   var rowData = props.data;
   const [data, setData] = useState([]);
-  const [isLoaded, setLoaded] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event, pk) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
     if (pk) getLog(pk);
     setData([]);
-    setLoaded(false);
   };
 
   const open = Boolean(anchorEl);
 
   function getLog(pk) {
-    const queryText = `SELECT * FROM public.db_dblog where dbnode_id = ${pk} order by id desc`;
-    if (!isLoaded) {
-      db.query(queryText, (err, res) => {
-        if (res.rows) {
-          setData(res.rows);
-          // console.log(res.rows.length);
-          setLoaded(true);
-        }
+    fetch(`/dblog/${pk}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
       });
-    }
   }
   return (
     <React.Fragment>
@@ -122,10 +112,12 @@ function LinkDetails(props) {
 
   function getMetadata(pk) {
     fetch(`/dbnodes/${pk}`)
-      .then((res) => {
-        setMetaData(res.rows);
-        setLoaded(true)
+      .then((res) => res.json())
+      .then((data) => {
+        setMetaData(data);
+        setLoaded(true);
       });
+
   }
 
   if (data.length !== 0) {
@@ -176,7 +168,7 @@ function LinkDetails(props) {
                 <ListItemText
                   primary={
                     <span>
-                      <span onClick={() => copyToClip(row.content)}>
+                      <span onClick={() => copy(row.content)}>
                         <Attr>{row.property}</Attr>
                       </span>{" "}
                       {row.content}
@@ -197,29 +189,23 @@ function LinkDetails(props) {
 export function LinkButton(props) {
   var rowData = props.data;
   const [data, setData] = useState([]);
-  const [isLoaded, setLoaded] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event, pk) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
     if (pk) getLinks(pk);
     setData([]);
-    setLoaded(false);
   };
 
   const open = Boolean(anchorEl);
 
   function getLinks(pk) {
-    const queryText = `SELECT * FROM public.db_dblink where output_id = ${pk} or input_id = ${pk}`;
-    if (!isLoaded) {
-      db.query(queryText, (err, res) => {
-        if (res.rows) {
-          setData(res.rows);
-          // console.log(res.rows.length);
-          setLoaded(true);
-        }
+    fetch(`/dblink/${pk}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
       });
-    }
+
   }
   return (
     <React.Fragment>
@@ -257,96 +243,96 @@ export function LinkButton(props) {
 }
 
 // Cat output of a file
-function CatData(props) {
-  var data = props.data;
-  if (data.length !== 0) {
-    return data.map((row, index) => (
-      <p style={{ margin: 0 }} key={index}>
-        {row}
-      </p>
-    ));
-  } else {
-    return <span>Loading...</span>;
-  }
-}
+// function CatData(props) {
+//   var data = props.data;
+//   if (data.length !== 0) {
+//     return data.map((row, index) => (
+//       <p style={{ margin: 0 }} key={index}>
+//         {row}
+//       </p>
+//     ));
+//   } else {
+//     return <span>Loading...</span>;
+//   }
+// }
 
-export function CatFile(props) {
-  var fileName = props.data;
-  var computerId = props.computerId;
-  var uuid = props.uuid
-  // var remotePath = props.remotePath;
-  var remoteWorkdir = props.remoteWorkdir;
-  const [data, setData] = useState([]);
-  const [isLoaded, setLoaded] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  var hostname;
-  var username;
+// export function CatFile(props) {
+//   var fileName = props.data;
+//   var computerId = props.computerId;
+//   var uuid = props.uuid
+//   // var remotePath = props.remotePath;
+//   var remoteWorkdir = props.remoteWorkdir;
+//   const [data, setData] = useState([]);
+//   const [isLoaded, setLoaded] = useState(false);
+//   const [anchorEl, setAnchorEl] = useState(null);
+//   var hostname;
+//   var username;
 
-  const handleClick = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-    if (remoteWorkdir && fileName) {
-      getTextRemote();
-    } else if (uuid && fileName) {
-      console.log('local')
-      getTextLocal()
-    } else {
-      setData([]);
-      setLoaded(false);
-    }
-  };
+//   const handleClick = (event) => {
+//     setAnchorEl(anchorEl ? null : event.currentTarget);
+//     if (remoteWorkdir && fileName) {
+//       getTextRemote();
+//     } else if (uuid && fileName) {
+//       console.log('local')
+//       getTextLocal()
+//     } else {
+//       setData([]);
+//       setLoaded(false);
+//     }
+//   };
 
-  const open = Boolean(anchorEl);
+//   const open = Boolean(anchorEl);
 
-  function getTextRemote() {
-    const queryText = `SELECT * FROM public.db_dbauthinfo where dbcomputer_id = ${computerId} order by id desc`;
-    if (!isLoaded) {
-      db.query(queryText, (err, res) => {
-        if (res.rows.length) {
-          hostname = res.rows[0]["auth_params"]["gss_host"];
-          username = res.rows[0]["auth_params"]["username"];
-          setData(catRemoteFile(hostname, username, remoteWorkdir, fileName));
-          setLoaded(true);
-        } else {
-          setData(['This node might be imported from a different database. Computer ID cannot be determined. Please use the terminal'])
-          setLoaded(true);
-        }
-      });
-    }
-  }
+//   function getTextRemote() {
+//     const queryText = `SELECT * FROM public.db_dbauthinfo where dbcomputer_id = ${computerId} order by id desc`;
+//     if (!isLoaded) {
+//       db.query(queryText, (err, res) => {
+//         if (res.rows.length) {
+//           hostname = res.rows[0]["auth_params"]["gss_host"];
+//           username = res.rows[0]["auth_params"]["username"];
+//           setData(catRemoteFile(hostname, username, remoteWorkdir, fileName));
+//           setLoaded(true);
+//         } else {
+//           setData(['This node might be imported from a different database. Computer ID cannot be determined. Please use the terminal'])
+//           setLoaded(true);
+//         }
+//       });
+//     }
+//   }
 
-  function getTextLocal() {
-    if (!isLoaded) {
-      setData(catLocalFile(uuid, fileName));
-      setLoaded(true);
-    }
-  }
+//   function getTextLocal() {
+//     if (!isLoaded) {
+//       setData(catLocalFile(uuid, fileName));
+//       setLoaded(true);
+//     }
+//   }
 
 
-  return (
-    <React.Fragment>
-      <Button
-        disableRipple={true}
-        onClick={event => handleClick(event)}
-      >
-        {fileName}
-      </Button>
-      <Modal style={{ zIndex: 2100 }} isOpen={open}>
-        <div style={{ height: 50 }}>
-          <Button
-            disableRipple={true}
-            variant="outlined"
-            fontSize="small"
-            style={{ float: "left" }}
-            onClick={handleClick}
-          >
-            Close
-          </Button>
-        </div>
-        <div style={{ height: "80vh", overflow: "scroll" }}>
-          <CatData data={data} />
-        </div>
-      </Modal>
-    </React.Fragment>
-  );
-}
+//   return (
+//     <React.Fragment>
+//       <Button
+//         disableRipple={true}
+//         onClick={event => handleClick(event)}
+//       >
+//         {fileName}
+//       </Button>
+//       <Modal style={{ zIndex: 2100 }} isOpen={open}>
+//         <div style={{ height: 50 }}>
+//           <Button
+//             disableRipple={true}
+//             variant="outlined"
+//             fontSize="small"
+//             style={{ float: "left" }}
+//             onClick={handleClick}
+//           >
+//             Close
+//           </Button>
+//         </div>
+//         <div style={{ height: "80vh", overflow: "scroll" }}>
+//           <CatData data={data} />
+//         </div>
+//       </Modal>
+//     </React.Fragment>
+//   );
+// }
 

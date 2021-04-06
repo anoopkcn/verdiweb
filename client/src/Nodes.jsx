@@ -14,13 +14,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
 import NodesTable from "./NodesTable";
 import "./assets/css/animations.css";
-// import { db } from "../lib/global";
 
 
 const intervalRep = ["1s", "2s", "5s", "10s", "20s"];
-const dayList = ["1d", "2d", "3d", "5d", "300"];
+// const dayList = ["1d", "2d", "3d", "5d", "300"];
 const intervalTime = [1, 2, 5, 10, 20];
-let db=true
+let db = true
 
 const useStyles = makeStyles(theme => ({
   palette: {
@@ -89,16 +88,16 @@ export default function Nodes() {
   };
   async function fetchData() {
     fetch("/dbnodes")
-    .then((res) => res.json())
-    .then((data) => {
-      setData(data);
-      setLoaded(true);
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
+        setLoaded(true);
+      });
   }
 
   useEffect(() => {
-    let didCancel = false;
-    let db = true;
+    // let didCancel = false;
+    // let db = true;
     fetchData()
     if (isIntervel) {
       setInterval(() => {
@@ -107,7 +106,7 @@ export default function Nodes() {
     }
 
     // console.log(data)
-    
+
   }, [fetchInterval, isIntervel]);
 
   let nodesTable;
@@ -150,14 +149,14 @@ export default function Nodes() {
                     disableRipple={true}
                     variant="outlined"
                     className={classes.button}
-                    // onClick={activateDatabase}
+                  // onClick={activateDatabase}
                   >
                     <BallotIcon color={activeColor(db)} />
                   </Button>
                   <Button
                     disableRipple={true}
                     variant="outlined"
-                    // onClick={activateRestAPI}
+                  // onClick={activateRestAPI}
                   >
                     <CastConnectedIcon color={activeColor(isRemoteDB)} />
                   </Button>

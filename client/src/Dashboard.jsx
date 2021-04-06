@@ -29,7 +29,7 @@ export default function Dashboard() {
       <Container maxWidth="xl" className={classes.container}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-              <Nodes />
+            <Nodes />
           </Grid>
         </Grid>
       </Container>

@@ -15,10 +15,10 @@ import { AccordionSummary } from '@material-ui/core'
 import { AccordionDetails } from '@material-ui/core'
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { flattenObject, pathFromHash, lsLocalDir} from "./utils";
-// import { LogButton, LinkButton,  CatFile } from "./Actions";
+import { flattenObject, pathFromHash } from "./utils";
+import { LogButton, LinkButton } from "./Actions";
 import { Attr } from "./Elements";
-import copy from "copy-to-clipboard"; 
+import copy from "copy-to-clipboard";
 
 
 const ExpansionPanel = withStyles({
@@ -121,7 +121,7 @@ function DetailsPanel(props) {
   const classes = useStyles();
   function getMetadata(data_t) {
     var data;
-    data=data_t.attributes
+    data = data_t.attributes
     var mRows = [];
     var obj = flattenObject(data);
     for (var key in obj) {
@@ -140,7 +140,7 @@ function DetailsPanel(props) {
     createData("Label", rowData.label),
     createData("Description", rowData.description)
   ];
-  const metareg=RegExp('detailed_job_info.*')
+  const metareg = RegExp('detailed_job_info.*')
   return (
     <div className={classes.details}>
       <Grid container spacing={3}>
@@ -241,12 +241,12 @@ function DetailsPanel(props) {
                 >
                   <Typography className={classes.heading}>Metadata</Typography>
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails> 
+                <ExpansionPanelDetails>
                   <List dense={true}>
                     {getMetadata(rowData).map(row => (
                       <ListItem key={"key" + row.property}>
                         <ListItemText
-                          primary={!metareg.test(row.property) && 
+                          primary={!metareg.test(row.property) &&
                             <span>
                               <span onClick={() => copy(row.content)}>
                                 <Attr>{row.property}</Attr>
@@ -259,20 +259,20 @@ function DetailsPanel(props) {
                     ))}
                   </List>
                   <List dense={true}>
-                  { rowData.node_type.split(".")[2] === "FolderData" &&
-                    <ListItem key={"key_path"}>
-                    <ListItemText
-                      primary={
-                        <span>
-                          <span onClick={() => copy(pathFromHash(rowData.uuid))}>
-                            <Attr>local_path</Attr>
-                          </span>{" "}
-                          {pathFromHash(rowData.uuid)}
-                        </span>
-                      }
-                    />
-                    </ListItem>
-                  }
+                    {rowData.node_type.split(".")[2] === "FolderData" &&
+                      <ListItem key={"key_path"}>
+                        <ListItemText
+                          primary={
+                            <span>
+                              <span onClick={() => copy(pathFromHash(rowData.uuid))}>
+                                <Attr>local_path</Attr>
+                              </span>{" "}
+                              {pathFromHash(rowData.uuid)}
+                            </span>
+                          }
+                        />
+                      </ListItem>
+                    }
                   </List>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
@@ -309,7 +309,7 @@ export default function NodesTable(props) {
         pageSizeOptions: [],
         sorting: true,
         grouping: false,
-        padding:"dense",
+        padding: "dense",
         headerStyle: {
           zIndex: 0
         }
@@ -329,7 +329,7 @@ export default function NodesTable(props) {
             <span>{getLast(rowData.node_type.split("."), 2)}</span>
           )
         },
-        { title: "Label", field: "label" , render: rowData=>(rowData.label.substring(0,24))},
+        { title: "Label", field: "label", render: rowData => (rowData.label.substring(0, 24)) },
         { title: "Material", field: "attributes.material" },
         {
           title: "Status",
@@ -351,8 +351,8 @@ export default function NodesTable(props) {
           title: "",
           render: rowData => (
             <React.Fragment>
-              {/* <LogButton data={rowData} /> */}
-              {/* <LinkButton data={rowData} /> */}
+              <LogButton data={rowData} />
+              <LinkButton data={rowData} />
             </React.Fragment>
           )
         }
@@ -376,7 +376,7 @@ export default function NodesTable(props) {
           }
         }
       ]}
-      // onRowClick={(event, rowData, togglePanel) => togglePanel()}
+    // onRowClick={(event, rowData, togglePanel) => togglePanel()}
     />
   );
 }
