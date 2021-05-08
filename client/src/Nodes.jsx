@@ -15,44 +15,43 @@ import MenuList from "@material-ui/core/MenuList";
 import NodesTable from "./NodesTable";
 import "./assets/css/animations.css";
 
-
 const intervalRep = ["1s", "2s", "5s", "10s", "20s"];
 // const dayList = ["1d", "2d", "3d", "5d", "300"];
 const intervalTime = [1, 2, 5, 10, 20];
-let db = true
+let db = true;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   palette: {
-    secondary: { main: "#11cb5f" }
+    secondary: { main: "#11cb5f" },
   },
   root: {
     minHeight: 500,
     width: "100%",
-    border: "1px solid rgba(0, 0, 0, .125)"
+    border: "1px solid rgba(0, 0, 0, .125)",
     // boxShadow: '0 0 0 0',
   },
   loading: {
     textAlign: "center",
-    paddingTop: 132.5 // (minheight/2) - (iconSize/2)
+    paddingTop: 132.5, // (minheight/2) - (iconSize/2)
   },
   toolbar: {
     width: "100%",
-    backgroundColor: "#FAFAFA"
+    backgroundColor: "#FAFAFA",
     // padding: theme.spacing(1, 2),
   },
   button: {
-    margin: theme.spacing(0, 1, 0, 0)
+    margin: theme.spacing(0, 1, 0, 0),
   },
 
   intervalButton: {
-    margin: theme.spacing(0.3, 0, 0, 0)
-  }
+    margin: theme.spacing(0.3, 0, 0, 0),
+  },
 }));
 
 export default function Nodes() {
   const [data, setData] = useState({});
   const [isLoaded, setLoaded] = useState(false);
-  const isRemoteDB = false
+  const isRemoteDB = false;
 
   //for split button
   const [open, setOpen] = useState(false);
@@ -64,10 +63,10 @@ export default function Nodes() {
 
   var fetchInterval = 1000 * intervalTime[selectedIndex];
 
-  const activeColor = isActive => {
+  const activeColor = (isActive) => {
     return isActive ? "secondary" : "disabled";
   };
-  const activeColorButton = isActive => {
+  const activeColorButton = (isActive) => {
     if (isActive) return "secondary";
   };
 
@@ -84,7 +83,7 @@ export default function Nodes() {
     setTimeInterval(!isIntervel);
   };
   const handleToggle = () => {
-    setOpen(prevOpen => !prevOpen);
+    setOpen((prevOpen) => !prevOpen);
   };
   async function fetchData() {
     fetch("/dbnodes")
@@ -98,7 +97,7 @@ export default function Nodes() {
   useEffect(() => {
     // let didCancel = false;
     // let db = true;
-    fetchData()
+    fetchData();
     if (isIntervel) {
       setInterval(() => {
         fetchData();
@@ -106,7 +105,6 @@ export default function Nodes() {
     }
 
     // console.log(data)
-
   }, [fetchInterval, isIntervel]);
 
   let nodesTable;
@@ -149,43 +147,17 @@ export default function Nodes() {
                     disableRipple={true}
                     variant="outlined"
                     className={classes.button}
-                  // onClick={activateDatabase}
+                    // onClick={activateDatabase}
                   >
                     <BallotIcon color={activeColor(db)} />
                   </Button>
                   <Button
                     disableRipple={true}
                     variant="outlined"
-                  // onClick={activateRestAPI}
+                    // onClick={activateRestAPI}
                   >
                     <CastConnectedIcon color={activeColor(isRemoteDB)} />
                   </Button>
-                  {/* <ButtonGroup
-                    disableRipple={true}
-                    size="small"
-                    className={classes.intervalButton}
-                    color={activeColorButton(isIntervel)}
-                    ref={anchorRef}
-                    aria-label="split button"
-                  >
-                    <Button
-                      disableRipple={true}
-                      size="small"
-                      onClick={switchInterval}
-                    >
-                      {dayList[selectedIndex]}
-                    </Button>
-                    <Button
-                      disableRipple={true}
-                      size="small"
-                      color={activeColorButton(isIntervel)}
-                      aria-owns={open ? "menu-list-grow" : undefined}
-                      aria-haspopup="true"
-                      onClick={handleToggle}
-                    >
-                      <ArrowDropDownIcon />
-                    </Button>
-                  </ButtonGroup> */}
                 </Grid>
 
                 {/* refresh interval */}
@@ -231,7 +203,7 @@ export default function Nodes() {
                     {...TransitionProps}
                     style={{
                       transformOrigin:
-                        placement === "bottom" ? "center top" : "center bottom"
+                        placement === "bottom" ? "center top" : "center bottom",
                     }}
                   >
                     <Paper id="menu-list-grow">
@@ -240,7 +212,9 @@ export default function Nodes() {
                           <MenuItem
                             key={option}
                             selected={index === selectedIndex}
-                            onClick={event => handleMenuItemClick(event, index)}
+                            onClick={(event) =>
+                              handleMenuItemClick(event, index)
+                            }
                           >
                             {option}
                           </MenuItem>
@@ -254,9 +228,7 @@ export default function Nodes() {
           </Paper>
         </Grid>
         <Grid item xs={12}>
-          <Paper className={classes.root}>
-            {nodesTable}
-          </Paper>
+          <Paper className={classes.root}>{nodesTable}</Paper>
         </Grid>
       </Grid>
     </React.Fragment>

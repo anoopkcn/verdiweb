@@ -3,7 +3,7 @@ const fs = require("fs");
 const { Pool } = require("pg");
 
 const HOME_DIR = os.homedir();
-const CONFIG_FILE = `${HOME_DIR}/.mse`;
+const CONFIG_FILE = `${HOME_DIR}/.verdiweb`;
 var db = null;
 
 function readConfig() {

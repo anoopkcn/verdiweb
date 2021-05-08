@@ -18,7 +18,7 @@ app.use(
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 app.get('/', (request, response) => {
-    response.json({ message: "Welcome to mse webview" })
+    response.json({ message: "Welcome to AiiDA Verdi webview" })
 })
 
 app.get('/dbnodes', db.dbnodes)
